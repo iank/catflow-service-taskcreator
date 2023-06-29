@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.2", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "catflow-service-taskcreator"
+dynamic = ["version"]
+readme = "README.md"
+description = "Data labeling task creation service for an object recognition pipeline"
+authors = [{ name = "Ian Kilgore", email = "iank@iank.org"}]
+license = {file = "LICENSE"}
+requires-python = ">=3.7"
+dependencies = [
+  "catflow-worker>=0.1.7",
+  "pillow",
+  "aiohttp",
+]
+
+[tool.setuptools]
+packages = ["catflow_service_taskcreator"]
+
+[project.scripts]
+catflow-service-taskcreator = "catflow_service_taskcreator:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-asyncio",
+]
+
+[tool.setuptools_scm]
+write_to = "catflow_service_taskcreator/_version.py"
+
+[tool.pytest.ini_options]
+taskcreatorwarnings = [
+    # Fail on any warnings that are not explicitly matched below
+    "error",
+]
