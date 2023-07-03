@@ -32,7 +32,7 @@ dev = [
 write_to = "catflow_service_taskcreator/_version.py"
 
 [tool.pytest.ini_options]
-taskcreatorwarnings = [
+filterwarnings = [
     # Fail on any warnings that are not explicitly matched below
     "error",
 ]

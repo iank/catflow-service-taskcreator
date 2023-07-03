@@ -11,6 +11,7 @@ from catflow_worker.types import (
 import os
 import io
 from PIL import Image
+import random
 
 import logging
 
@@ -88,6 +89,10 @@ async def taskcreator_handler(
     annotated_frames = AnnotatedFrameSchema(many=True).load(msg)
 
     for frame in annotated_frames:
+        # Skip 95% of incoming frames
+        if random.random() > 0.05:
+            continue
+
         # Download from bucket
         frame_file = io.BytesIO()
         await s3.download_fileobj(bucket, frame.key, frame_file)
