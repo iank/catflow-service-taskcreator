@@ -89,8 +89,8 @@ async def taskcreator_handler(
     annotated_frames = AnnotatedFrameSchema(many=True).load(msg)
 
     for frame in annotated_frames:
-        # Skip 95% of incoming frames
-        if random.random() > 0.05:
+        # Skip 99.5% of incoming frames
+        if random.random() > 0.005:
             continue
 
         # Download from bucket
