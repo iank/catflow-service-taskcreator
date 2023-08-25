@@ -80,6 +80,8 @@ async def taskcreator_handler(
     global LS_AUTH_TOKEN
     global LS_PROJECT_ID
     global LS_URL
+    global S3_WEB_URL
+    global TASK_PROB
 
     api = LabelStudioAPI(LS_URL, LS_AUTH_TOKEN)
 
@@ -89,8 +91,8 @@ async def taskcreator_handler(
     annotated_frames = AnnotatedFrameSchema(many=True).load(msg)
 
     for frame in annotated_frames:
-        # Skip 99.5% of incoming frames
-        if random.random() > 0.005:
+        # Skip % of incoming frames
+        if random.random() > TASK_PROB:
             continue
 
         # Download from bucket
@@ -107,7 +109,7 @@ async def taskcreator_handler(
         await s3.upload_fileobj(frame_file, LS_BUCKET, frame.key)
 
         # Create task
-        s3_uri = os.environ["CATFLOW_S3_ENDPOINT_URL"] + f"/{LS_BUCKET}/{frame.key}"
+        s3_uri = S3_WEB_URL + f"/{frame.key}"
         ls_predictions = predictions_to_ls(
             frame.predictions, original_width, original_height
         )
@@ -168,7 +170,11 @@ def main() -> bool:
     global LS_AUTH_TOKEN
     global LS_PROJECT_ID
     global LS_URL
+    global S3_WEB_URL
+    global TASK_PROB
 
+    TASK_PROB = float(os.environ["CATFLOW_TASK_CREATION_PROB"])
+    S3_WEB_URL = os.environ["CATFLOW_S3_WEB_URL"]
     LS_BUCKET = os.environ["CATFLOW_LS_BUCKET_NAME"]
     LS_URL = os.environ["CATFLOW_LS_BASE_URL"]
     LS_PROJECT_ID = os.environ["CATFLOW_LS_PROJECT_ID"]
